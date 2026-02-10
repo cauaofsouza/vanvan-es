@@ -7,8 +7,10 @@ import org.springframework.stereotype.Service;
 import com.vanvan.exception.CnhAlreadyExistsException;
 import com.vanvan.exception.CpfAlreadyExistsException;
 import com.vanvan.exception.EmailAlreadyExistsException;
+import com.vanvan.model.Administrador;
 import com.vanvan.model.Motorista;
 import com.vanvan.model.Passageiro;
+import com.vanvan.repository.AdministradorRepository;
 import com.vanvan.repository.MotoristaRepository;
 import com.vanvan.repository.PassageiroRepository;
 import com.vanvan.repository.UsuarioRepository;
@@ -24,6 +26,9 @@ public class UsuarioService {
 
     @Autowired
     private PassageiroRepository passageiroRepository;
+
+    @Autowired
+    private AdministradorRepository administradorRepository;
 
     @Autowired
     private PasswordEncoder passwordEncoder;
@@ -62,4 +67,19 @@ public class UsuarioService {
         return passageiroRepository.save(passageiro);
     }
 
+    public Administrador cadastrarAdministrador(Administrador administrador) {
+        //verifica se o email já está cadastrado
+        if (usuarioRepository.findByEmail(administrador.getEmail()) != null) {
+            throw new EmailAlreadyExistsException(administrador.getEmail());
+        }
+        //verifica se o cpf já está cadastrado
+        if (administradorRepository.findByCpf(administrador.getCpf()) != null) {
+            throw new CpfAlreadyExistsException(administrador.getCpf());
+        }
+        //salva a senha criptografada
+        String senhaCriptografada = passwordEncoder.encode(administrador.getPassword());
+        administrador.setSenha(senhaCriptografada);
+        return administradorRepository.save(administrador);
+    }
 }
+
