@@ -79,11 +79,11 @@ public class UserService {
         switch (dto.role()) {
             case "passenger" -> {
                 RegisterRequestDTO p = (RegisterRequestDTO) dto;
-                new Passenger(p.username(), p.CPF(), p.phone(), p.email(), p.password());
+                return new Passenger(p.username(), p.CPF(), p.phone(), p.email(), p.password());
             }
             case "administrator" -> {
                 RegisterRequestDTO a = (RegisterRequestDTO) dto;
-                new Administrator(a.username(), a.CPF(), a.phone(), a.email(), a.password());
+                return new Administrator(a.username(), a.CPF(), a.phone(), a.email(), a.password());
             }
             case "driver" -> {
                 DriverRegisterRequestDTO d = (DriverRegisterRequestDTO)  dto;
@@ -97,7 +97,6 @@ public class UserService {
                 }
             default -> throw new IllegalArgumentException("Tipo de usuário inválido.");
         }
-        return null;
     }
 
 
