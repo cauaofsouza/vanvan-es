@@ -1,6 +1,7 @@
 package com.vanvan.service;
 
 import com.vanvan.dto.DriverRegisterRequestDTO;
+import com.vanvan.dto.RegisterDTO;
 import com.vanvan.dto.RegisterRequestDTO;
 import com.vanvan.exception.EmailAlreadyExistsException;
 import com.vanvan.model.Driver;
@@ -16,6 +17,9 @@ import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.security.crypto.password.PasswordEncoder;
+
+import java.time.LocalDate;
+import java.time.format.DateTimeFormatter;
 
 import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
@@ -37,12 +41,12 @@ class UserServiceTest {
         // ARRANGE
         // Simulando o Record RegisterRequestDTO (Role = passenger)
         var dto = new RegisterRequestDTO(
-            "passenger", "Carlos", "carlos@email.com", "123456", "11122233344", "81999999999"
+            "passenger", "Carlos", "carlos@email.com", "123456", "11122233344", "81999999999", LocalDate.parse("2026-02-16")
         );
 
-        when(userRepository.findByEmail(dto.email())).thenReturn(null);
-        when(userRepository.findByCpf(dto.cpf())).thenReturn(null);
-        when(passwordEncoder.encode(dto.password())).thenReturn("hashed_pass");
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
+        when(userRepository.findByCpf(dto.getCpf())).thenReturn(null);
+        when(passwordEncoder.encode(dto.getPassword())).thenReturn("hashed_pass");
         
         // Quando salvar passageiro, retorna um objeto Passenger preenchido
         when(passengerRepository.save(any(Passenger.class))).thenAnswer(i -> i.getArgument(0));
@@ -62,16 +66,23 @@ class UserServiceTest {
     void shouldRegisterDriver() {
         // ARRANGE
         // Simulando o Record DriverRegisterRequestDTO (Role = driver)
-        var dto = new DriverRegisterRequestDTO(
-            "driver", "Vanvan", "van@email.com", "senha123", "99988877700", "81988888888",
-            "12345678900", "chave-pix-aleatoria" // Campos extras
+        RegisterDTO dto = new DriverRegisterRequestDTO(
+            "Vanvan",
+                "van@email.com",
+                "senha123",
+                "12345678900",
+                "99988877700",
+                "driver",
+                LocalDate.parse("13/10/2003", DateTimeFormatter.ofPattern("dd-MM-yyyy")),
+                "81988888888"
+
         );
 
-        when(userRepository.findByEmail(dto.email())).thenReturn(null);
-        when(userRepository.findByCpf(dto.cpf())).thenReturn(null);
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(null);
+        when(userRepository.findByCpf(dto.getCpf())).thenReturn(null);
         // Importante: mockar verificação de CNH
-        when(driverRepository.existsByCnh(dto.cnh())).thenReturn(false);
-        when(passwordEncoder.encode(dto.password())).thenReturn("hashed_pass");
+        when(driverRepository.existsByCnh( ((DriverRegisterRequestDTO) dto).getCnh())).thenReturn(false);
+        when(passwordEncoder.encode(dto.getPassword())).thenReturn("hashed_pass");
         
         when(driverRepository.save(any(Driver.class))).thenAnswer(i -> i.getArgument(0));
 
@@ -87,10 +98,10 @@ class UserServiceTest {
     @DisplayName("Deve lançar erro se Email já existe")
     void shouldThrowIfEmailExists() {
         // ARRANGE
-        var dto = new RegisterRequestDTO("passenger", "Ana", "dup@email.com", "123", "000", "111");
+        var dto = new RegisterRequestDTO("passenger", "Ana", "dup@email.com", "123", "000", "111", LocalDate.parse("2026-02-16"));
         
         // Simula que achou alguém no banco
-        when(userRepository.findByEmail(dto.email())).thenReturn(mock(User.class));
+        when(userRepository.findByEmail(dto.getEmail())).thenReturn(mock(User.class));
 
         // ACT & ASSERT
         assertThrows(EmailAlreadyExistsException.class, () -> userService.register(dto));

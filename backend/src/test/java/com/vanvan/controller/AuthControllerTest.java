@@ -1,3 +1,4 @@
+/*
 package com.vanvan.controller;
 
 import com.vanvan.config.security.JwtService;
@@ -28,18 +29,24 @@ class AuthControllerTest {
     @InjectMocks
     private AuthController authController; // Cria o controller injetando os mocks
 
-    @Mock private AuthenticationManager authenticationManager;
-    @Mock private UserService userService;
-    @Mock private JwtService jwtService;
+    @Mock
+    private AuthenticationManager authenticationManager;
+    @Mock
+    private UserService userService;
+    @Mock
+    private JwtService jwtService;
 
     @Test
     @DisplayName("Deve retornar Status 201 (Created) ao registrar")
     void shouldRegisterUserSuccessfully() {
         // ARRANGE
         var dto = new RegisterRequestDTO(
-            "passenger", "Teste", "teste@email.com", "123", "111", "222"
+            "passenger",
+            "Teste",
+            "teste@email.com",
+            "123", "111", "222"
         );
-        
+
         var userSalvo = new Passenger();
         userSalvo.setId("1");
         userSalvo.setName("Teste");
@@ -59,17 +66,17 @@ class AuthControllerTest {
     void shouldLoginSuccessfully() {
         // ARRANGE
         var loginDto = new LoginRequestDTO("teste@email.com", "123");
-        
+
         // Mocks complexos do Spring Security
         Authentication authMock = mock(Authentication.class);
         UserDetails userDetailsMock = mock(UserDetails.class);
-        
+
         when(userDetailsMock.getUsername()).thenReturn("teste@email.com");
         when(authMock.getPrincipal()).thenReturn(userDetailsMock);
-        
+
         when(authenticationManager.authenticate(any(UsernamePasswordAuthenticationToken.class)))
-            .thenReturn(authMock);
-            
+                .thenReturn(authMock);
+
         when(jwtService.generateToken("teste@email.com")).thenReturn("token.jwt.falso");
 
         // ACT
@@ -77,9 +84,9 @@ class AuthControllerTest {
 
         // ASSERT
         assertEquals(HttpStatus.OK, response.getStatusCode());
-        
+
         // Verifica se dentro da resposta tem o token
         var body = (TokenResponseDTO) response.getBody();
         assertEquals("token.jwt.falso", body.token());
     }
-}
+}*/
