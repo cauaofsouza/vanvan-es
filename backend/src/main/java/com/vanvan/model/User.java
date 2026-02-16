@@ -9,8 +9,10 @@ import org.springframework.security.core.GrantedAuthority;
 import org.springframework.security.core.authority.SimpleGrantedAuthority;
 import org.springframework.security.core.userdetails.UserDetails;
 
+import java.time.LocalDate;
 import java.util.Collection;
 import java.util.List;
+import java.util.UUID;
 
 @Entity
 @Inheritance(strategy = InheritanceType.TABLE_PER_CLASS)
@@ -20,8 +22,9 @@ public abstract class User implements UserDetails {
 
     @Id
     @GeneratedValue(strategy = GenerationType.UUID)
-    private String id;
+    private UUID id;
 
+    @Column(nullable = false, length = 120)//nome obrigatorio
     private String name;
 
     @Column(unique = true)
@@ -37,16 +40,20 @@ public abstract class User implements UserDetails {
     @Enumerated(EnumType.STRING)
     private UserRole role;
 
+    @Column(name = "birth_date", nullable = false)
+    private LocalDate birthDate;
+
     public User() {
     }
 
-    public User(String name, String cpf, String phone, String email, String password, UserRole role) {
+    public User(String name, String cpf, String phone, String email, String password, UserRole role, LocalDate birthDate) {
         this.name = name;
         this.cpf = cpf;
         this.phone = phone;
         this.email = email;
         this.password = password;
         this.role = role;
+        this.birthDate = birthDate;
     }
 
     @Override
