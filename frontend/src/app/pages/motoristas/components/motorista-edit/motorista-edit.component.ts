@@ -7,7 +7,7 @@ import { FormsModule } from '@angular/forms';
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './motorista-edit.component.html',
-  styleUrl: './motorista-edit.component.css' // Se houver CSS
+  styleUrl: './motorista-edit.component.css' 
 })
 export class MotoristaEditComponent {
   // Recebe os dados do pai
