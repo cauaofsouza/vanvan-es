@@ -28,6 +28,7 @@
 
       <!-- BOTÃO + -->
       <button
+        (click)="adicionar()"
         class="w-[45px] h-[45px] bg-[#EEEEEF] rounded-full flex items-center justify-center"
       >
         <span class="text-[32px] text-[#646464] leading-none">+</span>
@@ -106,8 +107,15 @@
   </div>
 
 <app-motorista-edit
-  *ngIf="modalAberto"
+  *ngIf="modalEditarAberto" 
   [motorista]="motoristaSelecionado"
   (aoFechar)="fecharModal()"
   (aoSalvar)="salvarEdicao($event)">
 </app-motorista-edit>
+
+
+<app-motorista-add
+  *ngIf="modalAdicionarAberto"
+  (aoFechar)="fecharModal()"
+  (aoSalvar)="salvarNovoMotorista($event)">
+</app-motorista-add>

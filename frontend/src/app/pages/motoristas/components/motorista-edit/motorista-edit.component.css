@@ -7,7 +7,7 @@
   display: flex;
   justify-content: center;
   align-items: center;
-  z-index: 1000;
+  z-index: 9999;
 }
 
 /* MODAL CARD */
@@ -24,9 +24,10 @@
 
 /* TÍTULO */
 .modal-title {
-  font-size: 40px;
+  font-size: 64px;
   font-weight: 700;
   color: #112B3C;
+  font-family: google-sans-flex;
 }
 
 /* FORM */

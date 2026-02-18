@@ -1,91 +1,124 @@
-<div class="modal-overlay">
-  <div class="modal-container">
-    
-    <h1 class="modal-title">Adicionar motoristas</h1>
+<div class="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-md flex justify-center items-center p-4"
+     (click)="fechar()">
 
-    <form class="form-area">
-      
-      <div class="form-group">
-        <label>Nome completo</label>
-        <input type="text" 
-               name="nome"
-               [(ngModel)]="novoMotorista.nome" 
-               placeholder="Digite o nome">
-      </div>
+  <div class="bg-[#FAFAFA] rounded-[24px] w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl relative"
+       (click)="$event.stopPropagation()">
+       
+    <div class="flex justify-between p-6 md:p-10 flex flex-col shrink-0">
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Identidade</label>
-          <input type="text" 
-                 name="identidade"
-                 [(ngModel)]="novoMotorista.identidade" 
-                 placeholder="xxx.xxx.xxx-xx">
-        </div>
-        <div class="form-group">
-          <label>Carteira de Motorista</label>
-          <input type="text" 
-                 name="cnh"
-                 [(ngModel)]="novoMotorista.cnh" 
-                 placeholder="xxxxxxxxxxxx">
-        </div>
-      </div>
+      <h1 class="text-3xl md:text-[64px] font-bold text-[#112B3C] leading-tight">
+        Adicionar motoristas
+      </h1>
 
-      <div class="form-row">
-        <div class="form-group">
-          <label>Placa do veículo</label>
-          <input type="text" 
-                 name="placa"
-                 [(ngModel)]="novoMotorista.placa" 
-                 placeholder="xxxxxxxx">
-        </div>
-        <div class="form-group">
-          <label>Veículo</label>
-          <input type="text" 
-                 name="veiculo"
-                 [(ngModel)]="novoMotorista.veiculo" 
-                 placeholder="Modelo do veículo">
-        </div>
-      </div>
-
-      <div class="form-group">
-        <label>E-mail</label>
-        <input type="email" 
-               name="email"
-               [(ngModel)]="novoMotorista.email" 
-               placeholder="exemplo@email.com">
-      </div>
-
-      <div class="form-group password-group">
-        <label>Senha</label>
-        <div class="input-wrapper">
-          <input [type]="mostrarSenha ? 'text' : 'password'" 
-                 name="senha"
-                 [(ngModel)]="novoMotorista.senha" 
-                 placeholder="Digite a senha">
-          
-          <svg (click)="alternarVisualizacaoSenha()" 
-               class="password-icon" 
-               style="cursor: pointer;"
-               width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-             <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" 
-                   [attr.fill]="mostrarSenha ? '#112B3C' : '#646464'"/>
-          </svg>
-        </div>
-      </div>
-
-      <button type="button" class="btn-photo">
-        <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-          <path d="M20 4H16.83L15 2H9L7.17 4H4C2.9 4 2 4.9 2 6V18C2 19.1 2.9 20 4 20H20C21.1 20 22 19.1 22 18V6C22 4.9 21.1 4 20 4ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17Z" fill="#112B3C"/>
-        </svg>
-        Foto do motorista
-      </button>
-
-      <div class="actions-row">
-        <button type="button" class="btn btn-cancel" (click)="fechar()">Cancelar</button>
+      <form class="flex flex-col gap-6">
         
-        <button type="button" class="btn btn-save" (click)="salvar()">Salvar</button>
-      </div>
+        <div class="flex flex-col gap-2">
+          <label class="text-[#112B3C] font-medium text-sm">Nome completo</label>
+          <div class="bg-[#EEEEEF] rounded-lg p-3">
+            <input type="text" 
+                   name="nome"
+                   [(ngModel)]="novoMotorista.nome" 
+                   placeholder="Digite o nome"
+                   class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+          </div>
+        </div>
 
-    </form>
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">Identidade</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="text" 
+                     name="identidade"
+                     [(ngModel)]="novoMotorista.identidade" 
+                     placeholder="xxx.xxx.xxx-xx"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">Carteira de Motorista</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="text" 
+                     name="cnh"
+                     [(ngModel)]="novoMotorista.cnh" 
+                     placeholder="xxxxxxxxxxxx"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">Placa do veículo</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="text" 
+                     name="placa"
+                     [(ngModel)]="novoMotorista.placa" 
+                     placeholder="xxxxxxxx"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">Veículo</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="text" 
+                     name="veiculo"
+                     [(ngModel)]="novoMotorista.veiculo" 
+                     placeholder="Modelo do veículo"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="text-[#112B3C] font-medium text-sm">E-mail</label>
+          <div class="bg-[#EEEEEF] rounded-lg p-3">
+            <input type="email" 
+                   name="email"
+                   [(ngModel)]="novoMotorista.email" 
+                   placeholder="exemplo@email.com"
+                   class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+          </div>
+        </div>
+
+        <div class="flex flex-col gap-2">
+          <label class="text-[#112B3C] font-medium text-sm">Senha</label>
+          <div class="bg-[#EEEEEF] rounded-lg p-3 flex items-center relative">
+            <input [type]="mostrarSenha ? 'text' : 'password'" 
+                   name="senha"
+                   [(ngModel)]="novoMotorista.senha" 
+                   placeholder="Digite a senha"
+                   class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70 pr-10">
+            
+            <button type="button" (click)="alternarVisualizacaoSenha()" class="absolute right-3">
+                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" 
+                        [attr.fill]="mostrarSenha ? '#112B3C' : '#646464'"/>
+                 </svg>
+            </button>
+          </div>
+        </div>
+
+        <button type="button" class="w-fit px-8 py-3  border-dashed border-[1.5px] border-[#646464] rounded-lg flex items-center gap-2 hover:bg-gray-100 transition-colors">
+          <img src="assets/icons/upload.svg" class="w-5 h-5"/>
+          <span class="text-[#112B3C] font-bold uppercase tracking-wider text-base">Foto do motorista</span>
+        </button>
+
+        <div class="flex justify-end gap-6 mt-4">
+          
+          <button type="button" 
+                  class="justify-end bg-[#EEEEEF] text-[#557D96] font-bold uppercase tracking-wider px-10 py-3.5 rounded-lg hover:bg-gray-300 transition-colors" 
+                  (click)="fechar()">
+            Cancelar
+          </button>
+          
+          <button type="button" 
+                  class="justify-end bg-[#F66B0E] text-[#EEEEEF] font-bold uppercase tracking-wider px-10 py-3.5 rounded-lg hover:bg-[#d95a00] transition-colors shadow-md" 
+                  (click)="salvar()">
+            Salvar
+          </button>
+        </div>
+
+      </form>
+    </div>
   </div>
 </div>

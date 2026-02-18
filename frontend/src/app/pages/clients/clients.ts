@@ -13,12 +13,11 @@ interface Clients {
   standalone: true,
   imports: [CommonModule, FormsModule],
   templateUrl: './clients.html',
-  styleUrl: './clients.css',
 })
 export class ClientsList {
   filtro = '';
   clients: Clients[] = [
-    { id: 1, nome: 'João Silva de oleiveira santos da comadre', telephone: '1234567890' },
+    { id: 1, nome: 'João Silva ', telephone: '1234567890' },
     { id: 2, nome: 'Maria Oliveira', telephone: '0987654321' },
     { id: 3, nome: 'Carlos Pereira', telephone: '0000000000' },
     { id: 4, nome: 'Ana Souza', telephone: '0000000000' },

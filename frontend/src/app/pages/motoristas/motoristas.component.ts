@@ -2,6 +2,7 @@ import { Component } from '@angular/core';
 import { CommonModule } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { MotoristaEditComponent } from './components/motorista-edit/motorista-edit.component';
+import { MotoristaAdd } from './components/motorista-add/motorista-add';
 
 interface Motorista {
   id: number;
@@ -19,11 +20,15 @@ interface Motorista {
 @Component({
   selector: 'app-motoristas',
   standalone: true,
-  imports: [CommonModule, FormsModule, MotoristaEditComponent],
+  imports: [CommonModule, FormsModule, MotoristaEditComponent, MotoristaAdd],
   templateUrl: './motoristas.component.html',
 })
 export class MotoristasComponent {
   filtro = '';
+  modalEditarAberto = false;  
+  modalAdicionarAberto = false;
+  motoristaSelecionado: Motorista | null = null;
+
   motoristas: Motorista[] = [
     { id: 1, nome: 'João Silva de oleiveira santos da comadre', status: 'Ativo' },
     { id: 2, nome: 'Maria Oliveira', status: 'Em análise' },
@@ -48,13 +53,10 @@ export class MotoristasComponent {
     );
   }
 
-  modalAberto = false;
-  motoristaSelecionado: Motorista | null = null;
-
   editar(motorista:Motorista){
     console.log('Editar motorista', motorista);
     this.motoristaSelecionado = { ...motorista }; // cópia
-    this.modalAberto = true;
+    this.modalEditarAberto = true;
   }
 
   excluir(motorista:Motorista){
@@ -64,13 +66,16 @@ export class MotoristasComponent {
 
   adicionar(){
     console.log('Adicionar motorista');
+    this.modalAdicionarAberto = true;
     // AQUI ABRE O MODAL DE ADIÇÃO DE MOTORISTA
   }
 
   fecharModal() {
-  this.modalAberto = false;
+  this.modalEditarAberto = false;
+  this.modalAdicionarAberto = false;
   this.motoristaSelecionado = null;
-}
+  }
+
 
   salvarEdicao(motoristaEditado: Motorista) {
     const index = this.motoristas.findIndex((m) => m.id === motoristaEditado.id);
@@ -79,5 +84,24 @@ export class MotoristasComponent {
     }
     this.fecharModal();
   }
-  
+
+  salvarNovoMotorista(novoMotorista: any) {
+    console.log('Recebido do modal:', novoMotorista);
+
+    const novoId = this.motoristas.length > 0 ? Math.max(...this.motoristas.map(m => m.id)) + 1 : 1;
+
+    // Cria o objeto completo
+    const motoristaPronto: Motorista = {
+      id: novoId,
+      nome: novoMotorista.nome,
+      status: 'Ativo', // Status padrão
+      ...novoMotorista
+    };
+
+    this.motoristas.push(motoristaPronto);
+    
+    // Fecha o modal
+    this.fecharModal();
+  }
+
 }

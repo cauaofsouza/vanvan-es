@@ -5,9 +5,8 @@ import { FormsModule } from '@angular/forms';
 @Component({
   selector: 'app-motorista-add',
   standalone: true,
-  imports: [CommonModule, FormsModule], // Importante para o ngModel funcionar
+  imports: [CommonModule, FormsModule],
   templateUrl: './motorista-add.html',
-  styleUrl: './motorista-add.css'
 })
 export class MotoristaAdd {
 
@@ -17,7 +16,6 @@ export class MotoristaAdd {
 
   mostrarSenha = false;
 
-  // Objeto vazio mapeando os campos do Figma
   novoMotorista = {
     nome: '',
     identidade: '', // CPF/RG
@@ -38,12 +36,8 @@ export class MotoristaAdd {
   }
 
   salvar() {
-    // Aqui você pode adicionar validações simples antes de enviar
-    // Ex: if (!this.novoMotorista.nome) return;
-
+    if (!this.novoMotorista.nome) return;
     console.log('Dados preenchidos:', this.novoMotorista);
-    
-    // Envia o objeto preenchido para o pai (que vai chamar o serviço)
     this.aoSalvar.emit(this.novoMotorista);
   }
 }
