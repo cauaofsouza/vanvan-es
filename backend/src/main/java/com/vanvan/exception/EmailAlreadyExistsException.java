@@ -7,6 +7,6 @@ import org.springframework.web.bind.annotation.ResponseStatus;
 public class EmailAlreadyExistsException extends RuntimeException {
 
     public EmailAlreadyExistsException(String email) {
-        super("Email already exists: " + email);
+        super("Este Email já está cadastrado: " + email);
     }
 }

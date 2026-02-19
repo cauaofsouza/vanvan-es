@@ -1,29 +1,34 @@
-import { Component, EventEmitter, Input, Output } from '@angular/core';
-import { MotoristaService } from '../../../../services/motoristas.service';
+import { Component, EventEmitter, Input, Output, signal } from '@angular/core';
 import { CommonModule } from '@angular/common';
+import { AdminService, DriverAdmin } from '../../../../services/admin.service';
+import { ToastService } from '../../../../components/toast/toast.service';
+import { Toast } from '../../../../components/toast/toast';
 
 @Component({
   selector: 'app-motorista-delete',
   standalone: true,
-  imports: [CommonModule],
+  imports: [CommonModule, Toast],
   templateUrl: './motorista-delete.component.html',
 })
 export class MotoristaDeleteComponent {
 
   // Recebe o motorista selecionado pelo componente pai
-  @Input() motorista: any;
+  @Input() motorista: DriverAdmin | null = null;
 
   // Emite evento para fechar o modal (true = excluiu, false = cancelou)
   @Output() aoFechar = new EventEmitter<boolean>();
 
   // Controle de estado para desabilitar botão durante o processo
-  carregando: boolean = false;
+  carregando = signal(false);
 
-  constructor(private service: MotoristaService) {}
+  constructor(
+    private adminService: AdminService,
+    private toastService: ToastService,
+  ) {}
 
   // Fecha o modal sem fazer nada
   fechar() {
-    if (!this.carregando) {
+    if (!this.carregando()) {
       this.aoFechar.emit(false);
     }
   }
@@ -31,24 +36,28 @@ export class MotoristaDeleteComponent {
   // Chama o serviço para apagar o registro
   confirmarExclusao() {
     // Validação de segurança
-    if (!this.motorista || !this.motorista.id) {
-      alert('Erro: Motorista não identificado.');
+    if (!this.motorista?.id) {
+      this.toastService.error('Erro: motorista não identificado.');
       return;
     }
 
-    this.carregando = true;
+    this.carregando.set(true);
 
-    this.service.excluir(this.motorista.id).subscribe({
+    this.adminService.deleteDriver(this.motorista.id).subscribe({
       next: () => {
-        // Sucesso: Avisa o pai para atualizar a lista
-        this.carregando = false;
-        this.aoFechar.emit(true);
+        this.carregando.set(false);
+        this.toastService.success('Motorista excluído com sucesso!');
+        setTimeout(() => this.aoFechar.emit(true), 800);
       },
-      error: (erro: any) => {
-        // Erro: Mostra log e alerta o usuário
-        console.error('Erro ao excluir motorista:', erro);
-        this.carregando = false;
-        alert('Não foi possível excluir o motorista. Tente novamente.');
+      error: (err: any) => {
+        this.carregando.set(false);
+        if (err?.error?.message) {
+          this.toastService.error(err.error.message);
+        } else if (typeof err?.error === 'string') {
+          this.toastService.error(err.error);
+        } else {
+          this.toastService.error('Não foi possível excluir o motorista. Tente novamente.');
+        }
       }
     });
   }

@@ -1,46 +1,50 @@
 import { Injectable } from '@angular/core';
-import { HttpClient } from '@angular/common/http';
+import { HttpClient, HttpParams } from '@angular/common/http';
 import { Observable } from 'rxjs';
+import { map } from 'rxjs/operators';
 
-// Definição do tipo Motorista (pode ficar aqui ou em arquivo separado)
+// Interface alinhada com DriverAdminResponseDTO do backend
 export interface Motorista {
-  id: number | string; // O ID é opcional na criação
-  nome: string;
-  identidade: string;
-  cnh: string;
-  placa: string;
-  veiculo: string;
+  id: string;
+  name: string;
   email: string;
-  senha?: string; // Senha opcional na edição/listagem
+  phone: string;
+  cnh: string;
+  birthDate: string;
+  registrationStatus: 'PENDING' | 'APPROVED' | 'REJECTED';
+  rejectionReason?: string;
+}
+
+interface PageResponse<T> {
+  content: T[];
+  totalElements: number;
+  totalPages: number;
+  size: number;
+  number: number;
 }
 
 @Injectable({
-  providedIn: 'root' // Isso faz o serviço ficar disponível para o app todo
+  providedIn: 'root'
 })
 export class MotoristaService {
 
   private readonly API_URL = 'http://localhost:8080/api/admin';
   constructor(private http: HttpClient) { }
 
-  listar(): Observable<Motorista[]> {
-    return this.http.get<Motorista[]>(this.API_URL);
+  listar(page = 0, size = 100): Observable<Motorista[]> {
+    const params = new HttpParams()
+      .set('page', page.toString())
+      .set('size', size.toString());
+    return this.http
+      .get<PageResponse<Motorista>>(`${this.API_URL}/drivers`, { params })
+      .pipe(map(response => response.content));
   }
 
-  buscarPorId(id: any): Observable<Motorista> {
-    return this.http.get<Motorista>(`${this.API_URL}/${id}`);
+  editar(motorista: Partial<Motorista> & { id: string }): Observable<Motorista> {
+    return this.http.put<Motorista>(`${this.API_URL}/drivers/${motorista.id}`, motorista);
   }
 
-  adicionar(motorista: Motorista): Observable<Motorista> {
-    return this.http.post<Motorista>(this.API_URL, motorista);
-  }
-
-  editar(motorista: Motorista): Observable<Motorista> {
-    const url = `${this.API_URL}/${motorista.id}`;
-    return this.http.put<Motorista>(url, motorista);
-  }
-  
   excluir(id: any): Observable<void> {
-    const url = `${this.API_URL}/${id}`;
-    return this.http.delete<void>(url);
+    return this.http.delete<void>(`${this.API_URL}/drivers/${id}`);
   }
 }

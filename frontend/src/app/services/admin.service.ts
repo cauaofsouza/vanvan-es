@@ -58,4 +58,27 @@ export class AdminService {
       { status, rejectionReason }
     );
   }
+
+  updateDriver(
+    driverId: string,
+    data: {
+      name?: string;
+      email?: string;
+      phone?: string;
+      cnh?: string;
+      cpf?: string;
+      registrationStatus?: 'PENDING' | 'APPROVED' | 'REJECTED';
+    }
+  ): Observable<DriverAdmin> {
+    return this.http.put<DriverAdmin>(
+      `${this.API_URL}/drivers/${driverId}`,
+      data
+    );
+  }
+
+  deleteDriver(driverId: string): Observable<void> {
+    return this.http.delete<void>(`${this.API_URL}/drivers/${driverId}`);
+  }
 }
+
+

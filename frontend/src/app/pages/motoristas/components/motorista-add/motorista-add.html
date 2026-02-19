@@ -3,118 +3,144 @@
 
   <div class="bg-[#FAFAFA] rounded-[24px] w-full max-w-5xl max-h-[90vh] overflow-y-auto shadow-2xl relative"
        (click)="$event.stopPropagation()">
-       
-    <div class="flex justify-between p-6 md:p-10 flex flex-col shrink-0">
 
-      <h1 class="text-3xl md:text-[64px] font-bold text-[#112B3C] leading-tight">
-        Adicionar motoristas
+    <div class="p-6 md:p-10 flex flex-col shrink-0">
+
+      <h1 class="text-3xl md:text-[64px] font-bold text-[#112B3C] leading-tight mb-6">
+        Adicionar motorista
       </h1>
 
       <form class="flex flex-col gap-6">
-        
+
+        <!-- Nome completo -->
         <div class="flex flex-col gap-2">
           <label class="text-[#112B3C] font-medium text-sm">Nome completo</label>
           <div class="bg-[#EEEEEF] rounded-lg p-3">
-            <input type="text" 
-                   name="nome"
-                   [(ngModel)]="novoMotorista.nome" 
-                   placeholder="Digite o nome"
+            <input type="text"
+                   name="name"
+                   [(ngModel)]="novoMotorista.name"
+                   placeholder="Digite o nome completo"
+                   maxlength="120"
                    class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="flex flex-col gap-2">
-            <label class="text-[#112B3C] font-medium text-sm">Identidade</label>
-            <div class="bg-[#EEEEEF] rounded-lg p-3">
-              <input type="text" 
-                     name="identidade"
-                     [(ngModel)]="novoMotorista.identidade" 
-                     placeholder="xxx.xxx.xxx-xx"
-                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
-            </div>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-[#112B3C] font-medium text-sm">Carteira de Motorista</label>
-            <div class="bg-[#EEEEEF] rounded-lg p-3">
-              <input type="text" 
-                     name="cnh"
-                     [(ngModel)]="novoMotorista.cnh" 
-                     placeholder="xxxxxxxxxxxx"
-                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
-          <div class="flex flex-col gap-2">
-            <label class="text-[#112B3C] font-medium text-sm">Placa do veículo</label>
-            <div class="bg-[#EEEEEF] rounded-lg p-3">
-              <input type="text" 
-                     name="placa"
-                     [(ngModel)]="novoMotorista.placa" 
-                     placeholder="xxxxxxxx"
-                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
-            </div>
-          </div>
-          <div class="flex flex-col gap-2">
-            <label class="text-[#112B3C] font-medium text-sm">Veículo</label>
-            <div class="bg-[#EEEEEF] rounded-lg p-3">
-              <input type="text" 
-                     name="veiculo"
-                     [(ngModel)]="novoMotorista.veiculo" 
-                     placeholder="Modelo do veículo"
-                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
-            </div>
-          </div>
-        </div>
-
+        <!-- Email -->
         <div class="flex flex-col gap-2">
           <label class="text-[#112B3C] font-medium text-sm">E-mail</label>
           <div class="bg-[#EEEEEF] rounded-lg p-3">
-            <input type="email" 
+            <input type="email"
                    name="email"
-                   [(ngModel)]="novoMotorista.email" 
+                   [(ngModel)]="novoMotorista.email"
                    placeholder="exemplo@email.com"
                    class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
           </div>
         </div>
 
+        <!-- Senha -->
         <div class="flex flex-col gap-2">
           <label class="text-[#112B3C] font-medium text-sm">Senha</label>
           <div class="bg-[#EEEEEF] rounded-lg p-3 flex items-center relative">
-            <input [type]="mostrarSenha ? 'text' : 'password'" 
-                   name="senha"
-                   [(ngModel)]="novoMotorista.senha" 
-                   placeholder="Digite a senha"
+            <input [type]="mostrarSenha ? 'text' : 'password'"
+                   name="password"
+                   [(ngModel)]="novoMotorista.password"
+                   placeholder="Digite a senha (mín. 8 caracteres)"
                    class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70 pr-10">
-            
             <button type="button" (click)="alternarVisualizacaoSenha()" class="absolute right-3">
-                 <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                  <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z" 
-                        [attr.fill]="mostrarSenha ? '#112B3C' : '#646464'"/>
-                 </svg>
+              <svg width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                <path d="M12 4.5C7 4.5 2.73 7.61 1 12C2.73 16.39 7 19.5 12 19.5C17 19.5 21.27 16.39 23 12C21.27 7.61 17 4.5 12 4.5ZM12 17C9.24 17 7 14.76 7 12C7 9.24 9.24 7 12 7C14.76 7 17 9.24 17 12C17 14.76 14.76 17 12 17ZM12 9C10.34 9 9 10.34 9 12C9 13.66 10.34 15 12 15C13.66 15 15 13.66 15 12C15 10.34 13.66 9 12 9Z"
+                      [attr.fill]="mostrarSenha ? '#112B3C' : '#646464'"/>
+              </svg>
             </button>
           </div>
         </div>
 
-        <button type="button" class="w-fit px-8 py-3  border-dashed border-[1.5px] border-[#646464] rounded-lg flex items-center gap-2 hover:bg-gray-100 transition-colors">
-          <img src="assets/icons/upload.svg" class="w-5 h-5"/>
-          <span class="text-[#112B3C] font-bold uppercase tracking-wider text-base">Foto do motorista</span>
-        </button>
+        <!-- CPF e Telefone -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">CPF (11 dígitos)</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="text"
+                     name="cpf"
+                     [ngModel]="novoMotorista.cpf"
+                     (input)="onCpfInput($event)"
+                     placeholder="00000000000"
+                     inputmode="numeric"
+                     maxlength="11"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">Telefone</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="tel"
+                     name="telephone"
+                     [ngModel]="novoMotorista.telephone"
+                     (input)="onPhoneInput($event)"
+                     placeholder="(00)00000-0000"
+                     inputmode="numeric"
+                     maxlength="14"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+        </div>
 
+        <!-- Data de nascimento -->
+        <div class="flex flex-col gap-2">
+          <label class="text-[#112B3C] font-medium text-sm">Data de nascimento</label>
+          <div class="bg-[#EEEEEF] rounded-lg p-3">
+            <input type="text"
+                   name="birthDate"
+                   [ngModel]="novoMotorista.birthDate"
+                   (input)="onBirthdateInput($event)"
+                   placeholder="dd/mm/aaaa"
+                   inputmode="numeric"
+                   maxlength="10"
+                   class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+          </div>
+        </div>
+
+        <!-- CNH e Chave PIX -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-6">
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">CNH (11 dígitos)</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="text"
+                     name="cnh"
+                     [ngModel]="novoMotorista.cnh"
+                     (input)="onCnhInput($event)"
+                     placeholder="00000000000"
+                     inputmode="numeric"
+                     maxlength="11"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+          <div class="flex flex-col gap-2">
+            <label class="text-[#112B3C] font-medium text-sm">Chave PIX</label>
+            <div class="bg-[#EEEEEF] rounded-lg p-3">
+              <input type="text"
+                     name="pixKey"
+                     [(ngModel)]="novoMotorista.pixKey"
+                     placeholder="CPF, e-mail, telefone ou chave aleatória"
+                     class="w-full bg-transparent text-[#646464] font-medium text-base outline-none placeholder-[#646464]/70">
+            </div>
+          </div>
+        </div>
+
+
+        <!-- Botões -->
         <div class="flex justify-end gap-6 mt-4">
-          
-          <button type="button" 
-                  class="justify-end bg-[#EEEEEF] text-[#557D96] font-bold uppercase tracking-wider px-10 py-3.5 rounded-lg hover:bg-gray-300 transition-colors" 
-                  (click)="fechar()">
+          <button type="button"
+                  class="bg-[#EEEEEF] text-[#557D96] font-bold uppercase tracking-wider px-10 py-3.5 rounded-lg hover:bg-gray-300 transition-colors"
+                  (click)="fechar()"
+                  [disabled]="carregando()">
             Cancelar
           </button>
-          
-          <button type="button" 
-                  class="justify-end bg-[#F66B0E] text-[#EEEEEF] font-bold uppercase tracking-wider px-10 py-3.5 rounded-lg hover:bg-[#d95a00] transition-colors shadow-md" 
-                  (click)="salvar()">
-            Salvar
+          <button type="button"
+                  class="bg-[#F66B0E] text-[#EEEEEF] font-bold uppercase tracking-wider px-10 py-3.5 rounded-lg hover:bg-[#d95a00] transition-colors shadow-md disabled:opacity-50"
+                  (click)="salvar()"
+                  [disabled]="carregando()">
+            {{ carregando() ? 'Salvando...' : 'Salvar' }}
           </button>
         </div>
 
@@ -122,3 +148,9 @@
     </div>
   </div>
 </div>
+
+<app-toast></app-toast>
+
+
+
+

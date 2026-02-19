@@ -1,5 +1,6 @@
 package com.vanvan.service;
 
+import com.vanvan.dto.DriverUpdateDTO;
 import com.vanvan.dto.DriverAdminResponseDTO;
 import com.vanvan.dto.DriverStatusUpdateDTO;
 import com.vanvan.enums.RegistrationStatus;
@@ -48,5 +49,25 @@ public class AdminService {
             driver.setRejectionReason(null); 
         }
         return DriverAdminResponseDTO.from(driverRepository.save(driver));
+    }
+
+    public DriverAdminResponseDTO updateDriver(UUID driverId, DriverUpdateDTO dto) {
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado."));
+
+        if (dto.name() != null && !dto.name().isBlank()) driver.setName(dto.name());
+        if (dto.email() != null && !dto.email().isBlank()) driver.setEmail(dto.email());
+        if (dto.phone() != null && !dto.phone().isBlank()) driver.setPhone(dto.phone());
+        if (dto.cnh() != null && !dto.cnh().isBlank()) driver.setCnh(dto.cnh());
+        if (dto.cpf() != null && !dto.cpf().isBlank()) driver.setCpf(dto.cpf());
+        if (dto.registrationStatus() != null) driver.setRegistrationStatus(dto.registrationStatus());
+
+        return DriverAdminResponseDTO.from(driverRepository.save(driver));
+    }
+
+    public void deleteDriver(UUID driverId) {
+        Driver driver = driverRepository.findById(driverId)
+                .orElseThrow(() -> new IllegalArgumentException("Motorista não encontrado."));
+        driverRepository.delete(driver);
     }
 }

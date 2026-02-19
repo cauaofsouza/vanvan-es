@@ -1,14 +1,14 @@
 <div class="fixed inset-0 z-[9999] bg-black/40 backdrop-blur-md flex justify-center items-center p-4"
      (click)="fechar()">
 
-  <div class="bg-[#FAFAFA] rounded-[24px] w-full max-w-[170vh] max-h-[90vh] overflow-y-auto shadow-2xl relative scroll-smooth m-4"
+  <div class="bg-[#FAFAFA] rounded-[24px] w-full max-w-[75rem] max-h-[90vh] overflow-y-auto shadow-2xl relative scroll-smooth m-4"
        (click)="$event.stopPropagation()">
-       
+
     <div class="p-6 md:p-10 flex flex-col transition-all duration-300 gap-6">
-      
+
       <div class="flex justify-between items-start">
         <h2 class="text-[#112B3C] text-3xl lg:text-4xl font-bold leading-tight truncate">
-          Editar motoristas
+          Editar motorista
         </h2>
         <button (click)="fechar()" class="text-gray-400 hover:text-red-500 p-2 -mr-2 -mt-2">
           <svg xmlns="http://www.w3.org/2000/svg" class="h-8 w-8" fill="none" viewBox="0 0 24 24" stroke="currentColor">
@@ -17,81 +17,114 @@
         </button>
       </div>
 
-      <div class="flex flex-col gap-5" *ngIf="motorista">
+      <div class="flex flex-col gap-5" *ngIf="motoristaEditado">
 
+        <!-- Nome -->
         <div class="flex flex-col gap-1">
           <label class="text-[#112B3C] text-sm font-medium ml-1">Nome completo</label>
           <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
-            <input type="text" [(ngModel)]="motorista.nome" placeholder="Digite o nome completo" class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
+            <input type="text" [(ngModel)]="motoristaEditado.name" name="name" maxlength="120"
+                   placeholder="Digite o nome completo"
+                   class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
           </div>
         </div>
 
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-1">
-            <label class="text-[#112B3C] text-sm font-medium ml-1">Identidade</label>
-            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
-              <input type="text" [(ngModel)]="motorista.identidade" placeholder="xxx.xxx.xxx-xx" class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
-            </div>
-          </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-[#112B3C] text-sm font-medium ml-1">CNH</label>
-            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
-              <input type="text" [(ngModel)]="motorista.cnh" placeholder="xxxxxxxxxxx" class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
-            </div>
-          </div>
-        </div>
-
-        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-          <div class="flex flex-col gap-1">
-            <label class="text-[#112B3C] text-sm font-medium ml-1">Placa</label>
-            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
-              <input type="text" [(ngModel)]="motorista.placa" placeholder="xxxxxxxx" class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
-            </div>
-          </div>
-          <div class="flex flex-col gap-1">
-            <label class="text-[#112B3C] text-sm font-medium ml-1">Veículo</label>
-            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
-              <input type="text" [(ngModel)]="motorista.modelo" placeholder="Modelo do veículo" class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
-            </div>
-          </div>
-        </div>
-
+        <!-- Email -->
         <div class="flex flex-col gap-1">
           <label class="text-[#112B3C] text-sm font-medium ml-1">E-mail</label>
           <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
-            <input type="email" [(ngModel)]="motorista.email" placeholder="exemplo@email.com" class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
+            <input type="email" [(ngModel)]="motoristaEditado.email" name="email"
+                   placeholder="exemplo@email.com"
+                   class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
           </div>
         </div>
 
-        <div class="flex flex-col gap-1">
-          <label class="text-[#112B3C] text-sm font-medium ml-1">Senha</label>
-          <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center justify-between">
-            <input [type]="mostrarSenha ? 'text' : 'password'" [(ngModel)]="motorista.senha" placeholder="Digite sua senha" class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm"/>
-            <button (click)="mostrarSenha = !mostrarSenha" type="button" class="focus:outline-none">
-               <img src="assets/icons/eye.svg" class="w-5 h-5 opacity-60"/>
-            </button>
+        <!-- CPF e Telefone -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-[#112B3C] text-sm font-medium ml-1">CPF (11 dígitos)</label>
+            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
+              <input type="text"
+                     name="cpf"
+                     [ngModel]="motoristaEditado.cpf"
+                     (input)="onCpfInput($event)"
+                     placeholder="00000000000"
+                     inputmode="numeric"
+                     maxlength="11"
+                     class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-[#112B3C] text-sm font-medium ml-1">Telefone</label>
+            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
+              <input type="tel"
+                     name="phone"
+                     [ngModel]="motoristaEditado.phone"
+                     (input)="onPhoneInput($event)"
+                     placeholder="(00)00000-0000"
+                     inputmode="numeric"
+                     maxlength="14"
+                     class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
+            </div>
           </div>
         </div>
-        
-        <div class="flex items-center gap-4 mt-2">
-           <button class="flex-1 h-12 border-[1.5px] border-[#646464] border-dashed rounded-lg flex items-center justify-center gap-2 hover:bg-gray-50 transition">
-             <img src="assets/icons/upload.svg" class="w-5 h-5"/>
-             <span class="text-[#112B3C] font-bold text-sm uppercase">Foto do motorista</span>
-           </button>
-           <img src="assets/icons/close-square.svg" class="w-[49px] h-[49px] cursor-pointer hover:opacity-80"/>
+
+        <!-- CNH e Status -->
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+          <div class="flex flex-col gap-1">
+            <label class="text-[#112B3C] text-sm font-medium ml-1">CNH (11 dígitos)</label>
+            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
+              <input type="text"
+                     name="cnh"
+                     [ngModel]="motoristaEditado.cnh"
+                     (input)="onCnhInput($event)"
+                     placeholder="00000000000"
+                     inputmode="numeric"
+                     maxlength="11"
+                     class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm">
+            </div>
+          </div>
+          <div class="flex flex-col gap-1">
+            <label class="text-[#112B3C] text-sm font-medium ml-1">Status</label>
+            <div class="bg-[#EEEEEF] rounded-lg px-4 h-12 flex items-center">
+              <select [(ngModel)]="motoristaEditado.registrationStatus"
+                      name="registrationStatus"
+                      class="w-full bg-transparent outline-none text-[#646464] font-medium">
+                <option *ngFor="let opt of statusOptions" [value]="opt.value">{{ opt.label }}</option>
+              </select>
+            </div>
+          </div>
+        </div>
+
+        <!-- Motivo da recusa -->
+        <div class="flex flex-col gap-1" *ngIf="motoristaEditado?.registrationStatus === 'REJECTED'">
+          <label class="text-[#112B3C] text-sm font-medium ml-1">Motivo da recusa <span class="text-red-500">*</span></label>
+          <div class="bg-[#EEEEEF] rounded-lg px-4 py-3">
+            <textarea [(ngModel)]="rejectionReason"
+                      name="rejectionReason"
+                      placeholder="Descreva o motivo da recusa..."
+                      rows="3"
+                      class="w-full bg-transparent outline-none text-[#646464] font-medium placeholder:text-gray-400 placeholder:text-sm resize-none"></textarea>
+          </div>
         </div>
 
       </div>
 
       <div class="flex gap-4 mt-6 pt-4 border-t border-gray-100 justify-end shrink-0">
-        <button (click)="fechar()" class="bg-[#EEEEEF] w-[184px] h-10 rounded-lg px-6 text-[#557D96] font-bold text-sm lg:text-base uppercase hover:brightness-95 transition">
+        <button (click)="fechar()"
+                [disabled]="carregando()"
+                class="bg-[#EEEEEF] w-[184px] h-10 rounded-lg px-6 text-[#557D96] font-bold text-sm lg:text-base uppercase hover:brightness-95 transition">
           Cancelar
         </button>
-        <button (click)="salvar()" class="bg-[#F66B0E] w-[184px] h-10 rounded-lg px-6 text-white font-bold text-sm lg:text-base uppercase hover:brightness-110 transition shadow-lg">
-          Salvar
+        <button (click)="salvar()"
+                [disabled]="carregando()"
+                class="bg-[#F66B0E] w-[184px] h-10 rounded-lg px-6 text-white font-bold text-sm lg:text-base uppercase hover:brightness-110 transition shadow-lg disabled:opacity-50">
+          {{ carregando() ? 'Salvando...' : 'Salvar' }}
         </button>
       </div>
 
     </div>
   </div>
 </div>
+
+<app-toast></app-toast>

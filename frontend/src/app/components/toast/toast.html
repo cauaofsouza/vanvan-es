@@ -1,4 +1,4 @@
-<div class="fixed bottom-6 right-6 z-50 flex flex-col gap-3 pointer-events-none">
+<div class="fixed bottom-6 right-6 z-[10000] flex flex-col gap-3 pointer-events-none">
   <div
     *ngFor="let toast of toastService.toasts()"
     @toastAnimation
@@ -18,7 +18,7 @@
         <circle cx="12" cy="12" r="12" fill="#31D0AA" fill-opacity="0.2"/>
         <path d="M16 9L10.5 14.5L8 12" stroke="#31D0AA" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
       </svg>
-      
+
       <!-- Error Icon -->
       <svg *ngIf="toast.type === 'error'" width="24" height="24" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
          <circle cx="12" cy="12" r="12" fill="#F66B0E" fill-opacity="0.2"/>
