@@ -4,6 +4,7 @@ import org.springframework.web.bind.annotation.*;
 import com.vanvan.dto.DriverAdminResponseDTO;
 import com.vanvan.dto.DriverStatusUpdateDTO;
 import com.vanvan.dto.DriverUpdateDTO;
+import com.vanvan.model.Passenger;
 import com.vanvan.model.User;
 import com.vanvan.enums.RegistrationStatus;
 import com.vanvan.service.AdminService;
@@ -52,9 +53,17 @@ public class AdminController {
     }
 
    @GetMapping("/clients")
-    public ResponseEntity<Page<User>> listClients(
+    public ResponseEntity<Page<Passenger>> listClients(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String cpf,
+            @RequestParam(required = false) String email,
             @PageableDefault(size = 10) Pageable pageable) {
-        return ResponseEntity.ok(adminService.listClients(pageable));
+        return ResponseEntity.ok(adminService.listClients(name, cpf, email, pageable));
+    }
+
+    @GetMapping("/clients/{id}")
+    public ResponseEntity<Passenger> getClientById(@PathVariable UUID id) {
+        return ResponseEntity.ok(adminService.getClientById(id));
     }
 
     @PostMapping("/clients")
