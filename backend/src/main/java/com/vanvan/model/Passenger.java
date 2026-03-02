@@ -4,21 +4,28 @@ import com.vanvan.enums.UserRole;
 import jakarta.persistence.Entity;
 import jakarta.persistence.ManyToMany;
 import jakarta.persistence.Table;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
+import org.hibernate.annotations.SQLDelete;
+import org.hibernate.annotations.SQLRestriction;
 
 import java.time.LocalDate;
 import java.util.ArrayList;
 import java.util.List;
 
+@Getter
 @Entity
 @Table(name = "passengers")
 @NoArgsConstructor//construtor vazio
+@SQLDelete(sql = "UPDATE user SET active = false WHERE id=?")
+@SQLRestriction("active = true")
 public class Passenger extends User {
 
 
 
     @ManyToMany(mappedBy = "passengers")
     private List<Trip> trips = new ArrayList<>(); //historico de viagens do passageiro
+
 
     public Passenger(String name, String cpf, String phone, String email, String password, LocalDate birthDate) {
         super(name, cpf, phone, email, password, UserRole.PASSENGER, birthDate);
@@ -36,7 +43,4 @@ public class Passenger extends User {
         trip.getPassengers().remove(this);
     }
 
-    public List<Trip> getTrips() {
-        return trips;
-    }
 }

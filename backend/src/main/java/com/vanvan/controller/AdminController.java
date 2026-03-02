@@ -1,9 +1,11 @@
 package com.vanvan.controller;
 
-import com.vanvan.dto.*;
-import com.vanvan.enums.TripStatus;
-import com.vanvan.service.TripService;
+import com.vanvan.dto.VehicleResponseDTO;
 import org.springframework.web.bind.annotation.*;
+import com.vanvan.dto.DriverAdminResponseDTO;
+import com.vanvan.dto.DriverStatusUpdateDTO;
+import com.vanvan.dto.DriverUpdateDTO;
+import com.vanvan.model.Passenger;
 import com.vanvan.model.User;
 import com.vanvan.enums.RegistrationStatus;
 import com.vanvan.service.AdminService;
@@ -15,7 +17,6 @@ import org.springframework.data.domain.Pageable;
 import org.springframework.data.web.PageableDefault;
 import org.springframework.http.ResponseEntity;
 
-import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
 
@@ -49,18 +50,24 @@ public class AdminController {
         return ResponseEntity.ok(adminService.updateDriver(id, dto));
     }
 
-    /*@GetMapping("/viagens/historico")
-    public */
-
     @DeleteMapping("/drivers/{id}")
     public ResponseEntity<String> deleteDriver(@PathVariable UUID id) {
         adminService.deleteDriver(id);
         return ResponseEntity.noContent().build();
     }
 
-    @GetMapping("/clients")
-    public ResponseEntity<Page<User>> listClients(Pageable pageable) {
-        return ResponseEntity.ok(adminService.listClients(pageable));
+   @GetMapping("/clients")
+    public ResponseEntity<Page<Passenger>> listClients(
+            @RequestParam(required = false) String name,
+            @RequestParam(required = false) String cpf,
+            @RequestParam(required = false) String email,
+            Pageable pageable) {
+        return ResponseEntity.ok(adminService.listClients(name, cpf, email, pageable));
+    }
+
+    @GetMapping("/clients/{id}")
+    public ResponseEntity<Passenger> getClientById(@PathVariable UUID id) {
+        return ResponseEntity.ok(adminService.getClientById(id));
     }
 
     @PostMapping("/clients")
