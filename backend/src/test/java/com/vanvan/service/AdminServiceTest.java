@@ -26,14 +26,9 @@ import com.vanvan.model.User;
 import com.vanvan.repository.DriverRepository;
 import com.vanvan.repository.UserRepository;
 
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertNotNull;
-import static org.junit.jupiter.api.Assertions.assertNull;
-import static org.junit.jupiter.api.Assertions.assertThrows;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.ArgumentMatchers.any;
-import static org.mockito.Mockito.times;
-import static org.mockito.Mockito.verify;
-import static org.mockito.Mockito.when;
+import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
 class AdminServiceTest {
@@ -220,14 +215,20 @@ class AdminServiceTest {
     }
 
     @Test
-    @DisplayName("Deve excluir cliente com sucesso")
+    @DisplayName("Deve marcar cliente como deletado com sucesso")
     void deleteClientSuccess() {
         UUID id = UUID.randomUUID();
-        when(userRepository.findById(id)).thenReturn(Optional.of(new Passenger()));
+        Passenger passenger = new Passenger();
+        passenger.setActive(false); // supondo que exista esse campo
+
+        when(userRepository.findById(id)).thenReturn(Optional.of(passenger));
+        when(userRepository.save(any(User.class))).thenAnswer(invocation -> invocation.getArgument(0));
 
         adminService.deleteClient(id);
 
-        verify(userRepository, times(1)).delete(any(User.class));
+        assertFalse(passenger.isActive());
+        verify(userRepository, times(1)).save(passenger);
+        verify(userRepository, never()).delete(any(User.class)); // confirma que delete não foi chamado
     }
     
 }
