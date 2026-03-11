@@ -1,5 +1,5 @@
 import { Component, OnInit, signal, inject, computed } from '@angular/core';
-import { CommonModule, DecimalPipe, DatePipe } from '@angular/common';
+import { CommonModule, DecimalPipe } from '@angular/common';
 import { FormsModule } from '@angular/forms';
 import { RatingService, Rating } from '../../services/rating.service';
 import { ToastService } from '../../components/toast/toast.service';
@@ -7,7 +7,7 @@ import { ToastService } from '../../components/toast/toast.service';
 @Component({
   selector: 'app-ratings',
   standalone: true,
-  imports: [CommonModule, FormsModule, DecimalPipe, DatePipe],
+  imports: [CommonModule, FormsModule, DecimalPipe],
   templateUrl: './ratings.html',
   styleUrl: './ratings.css',
 })
