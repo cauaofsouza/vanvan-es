@@ -224,7 +224,6 @@ export class SettingsComponent implements OnInit {
 
   confirmDelete(): void {
     if (!this.selectedTrip?.id) return;
-    // Backend nao possui DELETE /api/trips/{id} — remocao apenas local
     this._trips.update(l => l.filter(t => t.id !== this.selectedTrip!.id));
     this.closeModals();
   }

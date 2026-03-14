@@ -10,10 +10,6 @@ export interface Journey {
   destination: string;
 }
 
-/**
- * Espelha PricingUpdateDTO.java e a entidade Pricing.java
- * Endpoint: GET/PUT /api/admin/settings/pricing
- */
 export interface PricingConfig {
   minimumFare: number;
   perKmRate: number;
@@ -21,16 +17,11 @@ export interface PricingConfig {
   commissionRate: number;
 }
 
-/**
- * Espelha DriverAdminResponseDTO — campos usados no select de motoristas.
- * Endpoint: GET /api/admin/drivers
- */
 export interface DriverOption {
   id: string;   // UUID
   name: string;
 }
 
-/** Resposta paginada do Spring (Page<T>) */
 export interface SpringPage<T> {
   content: T[];
   totalElements: number;
@@ -64,8 +55,6 @@ export class SettingsService {
     return this.http.delete<void>(`${this.API_URL}/routes/${id}`);
   }
 
-  // --- Motoristas ---
-  // GET /api/admin/drivers?size=100
   listarMotoristas(page = 0, size = 100): Observable<SpringPage<DriverOption>> {
     const params = new HttpParams()
       .set('page', page)
@@ -73,13 +62,10 @@ export class SettingsService {
     return this.http.get<SpringPage<DriverOption>>(`${this.API_URL}/drivers`, { params });
   }
 
-  // --- Tarifa ---
-  // GET /api/admin/settings/pricing
   obterTarifaAtual(): Observable<PricingConfig> {
     return this.http.get<PricingConfig>(`${this.API_URL}/settings/pricing`);
   }
 
-  // PUT /api/admin/settings/pricing
   atualizarTarifa(tarifa: PricingConfig): Observable<PricingConfig> {
     return this.http.put<PricingConfig>(`${this.API_URL}/settings/pricing`, tarifa);
   }
