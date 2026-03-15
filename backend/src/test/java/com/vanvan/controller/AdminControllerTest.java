@@ -2,12 +2,14 @@ package com.vanvan.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
 import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.databind.module.SimpleModule;
 import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vanvan.dto.*;
 import com.vanvan.enums.RegistrationStatus;
 import com.vanvan.exception.GlobalExceptionHandler;
 import com.vanvan.model.Passenger;
 import com.vanvan.model.Pricing;
+import com.vanvan.model.User;
 import com.vanvan.service.AdminService;
 import com.vanvan.service.PricingService;
 import com.vanvan.service.VehicleService;
@@ -21,7 +23,12 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.core.MethodParameter;
 import org.springframework.data.domain.PageImpl;
 import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.http.HttpInputMessage;
+import org.springframework.http.HttpOutputMessage;
 import org.springframework.http.MediaType;
+import org.springframework.http.converter.AbstractHttpMessageConverter;
+import org.springframework.http.converter.HttpMessageNotReadableException;
+import org.springframework.http.converter.HttpMessageNotWritableException;
 import org.springframework.security.core.userdetails.UserDetails;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
@@ -30,6 +37,7 @@ import org.springframework.web.context.request.NativeWebRequest;
 import org.springframework.web.method.support.HandlerMethodArgumentResolver;
 import org.springframework.web.method.support.ModelAndViewContainer;
 
+import java.io.IOException;
 import java.time.LocalDate;
 import java.util.List;
 import java.util.UUID;
@@ -57,14 +65,13 @@ class AdminControllerTest {
     private AdminController adminController;
 
     private UserDetails userDetailsMock;
-    
-    private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new JavaTimeModule())
-            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    private ObjectMapper objectMapper;
 
     @BeforeEach
     void setup() {
         userDetailsMock = mock(UserDetails.class);
+
         HandlerMethodArgumentResolver authResolver = new HandlerMethodArgumentResolver() {
             @Override
             public boolean supportsParameter(MethodParameter parameter) {
@@ -78,9 +85,37 @@ class AdminControllerTest {
             }
         };
 
+        objectMapper = new ObjectMapper()
+                .registerModule(new JavaTimeModule())
+                .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS)
+                .disable(SerializationFeature.FAIL_ON_EMPTY_BEANS);
+
+        SimpleModule module = new SimpleModule();
+        module.addAbstractTypeMapping(User.class, Passenger.class);
+        objectMapper.registerModule(module);
+        AbstractHttpMessageConverter<Object> customConverter = new AbstractHttpMessageConverter<Object>(MediaType.APPLICATION_JSON) {
+            @Override
+            protected boolean supports(Class<?> clazz) {
+                return true;
+            }
+
+            @Override
+            protected Object readInternal(Class<?> clazz, HttpInputMessage inputMessage)
+                    throws IOException, HttpMessageNotReadableException {
+                return objectMapper.readValue(inputMessage.getBody(), clazz);
+            }
+
+            @Override
+            protected void writeInternal(Object o, HttpOutputMessage outputMessage)
+                    throws IOException, HttpMessageNotWritableException {
+                objectMapper.writeValue(outputMessage.getBody(), o);
+            }
+        };
+
         mockMvc = MockMvcBuilders.standaloneSetup(adminController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver(), authResolver)
                 .setControllerAdvice(new GlobalExceptionHandler())
+                .setMessageConverters(customConverter) // Injetamos nossa solução limpa
                 .build();
     }
 
