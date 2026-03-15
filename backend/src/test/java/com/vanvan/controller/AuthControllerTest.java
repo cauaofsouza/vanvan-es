@@ -1,20 +1,24 @@
 package com.vanvan.controller;
 
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import com.vanvan.config.security.JwtService;
 import com.vanvan.model.Passenger;
 import com.vanvan.service.UserService;
+import jakarta.validation.Validation;
 import jakarta.validation.Validator;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.http.MediaType;
 import org.springframework.security.authentication.AuthenticationManager;
+import org.springframework.security.authentication.BadCredentialsException;
 import org.springframework.security.authentication.UsernamePasswordAuthenticationToken;
 import org.springframework.security.core.Authentication;
+import org.springframework.test.context.ActiveProfiles;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
@@ -26,6 +30,7 @@ import static org.springframework.test.web.servlet.request.MockMvcRequestBuilder
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.status;
 
 @ExtendWith(MockitoExtension.class)
+@ActiveProfiles("test")
 class AuthControllerTest {
 
     private MockMvc mockMvc;
@@ -33,18 +38,17 @@ class AuthControllerTest {
     @Mock private AuthenticationManager authenticationManager;
     @Mock private UserService userService;
     @Mock private JwtService jwtService;
-    @Mock private Validator validator;
-
-    @InjectMocks
-    private AuthController authController;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
-            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+
+    private final Validator validator =
+            Validation.buildDefaultValidatorFactory().getValidator();
 
     @BeforeEach
     void setUp() {
-        authController = new AuthController(
+        AuthController authController = new AuthController(
                 authenticationManager, userService, jwtService, objectMapper, validator);
         mockMvc = MockMvcBuilders.standaloneSetup(authController)
                 .setControllerAdvice(new com.vanvan.exception.GlobalExceptionHandler())
@@ -104,11 +108,21 @@ class AuthControllerTest {
                 """;
 
         when(authenticationManager.authenticate(any()))
-                .thenThrow(new org.springframework.security.authentication.BadCredentialsException("bad"));
+                .thenThrow(new BadCredentialsException("bad"));
 
         mockMvc.perform(post("/api/auth/login")
                         .contentType(MediaType.APPLICATION_JSON)
                         .content(body))
                 .andExpect(status().isUnauthorized());
+    }
+
+    @Test
+    void register_driver_invalidJson_returns400() throws Exception {
+        String invalidDriverJson = "{}";
+
+        mockMvc.perform(post("/api/auth/register-driver")
+                        .contentType(MediaType.MULTIPART_FORM_DATA_VALUE)
+                        .param("driver", invalidDriverJson))
+                .andExpect(status().isBadRequest());
     }
 }
