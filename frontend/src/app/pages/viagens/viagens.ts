@@ -4,6 +4,7 @@ import { RouterModule } from '@angular/router';
 import { Tag, TagVariant } from '../../components/tags/tags';
 import { Buttons } from '../../components/buttons/buttons';
 import { Skeleton } from '../../components/skeleton/skeleton';
+import { ToastService } from '../../components/toast/toast.service';
 import QRCode from 'qrcode';
 
 @Component({
@@ -15,6 +16,7 @@ import QRCode from 'qrcode';
 })
 export class Viagens implements OnDestroy {
   private cdr = inject(ChangeDetectorRef);
+  private toastService = inject(ToastService);
 
   isLoading = true;
 
@@ -134,6 +136,42 @@ export class Viagens implements OnDestroy {
     // TODO: integrate with backend to actually cancel the trip
     console.log('Trip cancelled:', this.cancelTripRef);
     this.closeCancelPopup();
+  }
+
+  // Avaliação popup state
+  showEvaluatePopup = false;
+  evaluateTripRef: any = null;
+  currentRating = 0;
+  currentComment = '';
+
+  openEvaluatePopup(trip: any): void {
+    this.evaluateTripRef = trip;
+    this.showEvaluatePopup = true;
+    this.currentRating = 0; // reset
+    this.currentComment = ''; // reset
+  }
+
+  closeEvaluatePopup(): void {
+    this.showEvaluatePopup = false;
+    this.evaluateTripRef = null;
+  }
+
+  setRating(stars: number): void {
+    this.currentRating = stars;
+  }
+
+  updateComment(event: Event): void {
+    const target = event.target as HTMLTextAreaElement;
+    if (target) {
+      this.currentComment = target.value;
+    }
+  }
+
+  submitEvaluation(): void {
+    // TODO: integrate with backend
+    console.log('Avaliação enviada para a viagem:', this.evaluateTripRef, 'Nota:', this.currentRating, 'Comentário:', this.currentComment);
+    this.toastService.success('Avaliação enviada com sucesso!');
+    this.closeEvaluatePopup();
   }
 
   nextTrip = {
