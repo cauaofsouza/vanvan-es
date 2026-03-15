@@ -2,7 +2,6 @@ package com.vanvan.controller;
 
 import com.vanvan.dto.*;
 import com.vanvan.enums.TripStatus;
-import com.vanvan.model.User;
 import com.vanvan.service.TripService;
 import jakarta.validation.Valid;
 import lombok.RequiredArgsConstructor;
