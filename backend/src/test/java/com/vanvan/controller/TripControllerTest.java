@@ -1,21 +1,25 @@
 package com.vanvan.controller;
 
+import com.vanvan.config.security.JwtFilter;
+import com.vanvan.config.security.JwtService;
 import com.vanvan.dto.TripDetailsDTO;
 import com.vanvan.dto.UpdateTripStatusDTO;
 import com.vanvan.enums.TripStatus;
+import com.vanvan.repository.UserRepository;
 import com.vanvan.service.TripService;
 import com.fasterxml.jackson.databind.ObjectMapper;
-import org.junit.jupiter.api.BeforeEach;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.Test;
-import org.junit.jupiter.api.extension.ExtendWith;
-import org.mockito.InjectMocks;
-import org.mockito.Mock;
-import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.boot.webmvc.test.autoconfigure.WebMvcTest;
+import org.springframework.context.annotation.ComponentScan;
+import org.springframework.context.annotation.FilterType;
 import org.springframework.data.domain.PageImpl;
-import org.springframework.data.web.PageableHandlerMethodArgumentResolver;
+import org.springframework.security.test.context.support.WithMockUser;
+import org.springframework.test.context.bean.override.mockito.MockitoBean;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
-import org.springframework.test.web.servlet.setup.MockMvcBuilders;
 
 import java.time.LocalDate;
 import java.time.LocalTime;
@@ -26,29 +30,33 @@ import static org.mockito.Mockito.when;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.*;
 import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.*;
 
-@ExtendWith(MockitoExtension.class)
+@WebMvcTest(
+        controllers = TripController.class,
+        excludeFilters = @ComponentScan.Filter(
+                type = FilterType.ASSIGNABLE_TYPE,
+                classes = JwtFilter.class
+        )
+)
 class TripControllerTest {
 
+    @Autowired
     private MockMvc mockMvc;
 
-    @Mock private TripService tripService;
+    @MockitoBean
+    private TripService tripService;
 
-    @InjectMocks
-    private TripController tripController;
+    @MockitoBean
+    private JwtService jwtService;
+
+    @MockitoBean
+    private UserRepository userRepository;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
-            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
-
-    @BeforeEach
-    void setUp() {
-        mockMvc = MockMvcBuilders.standaloneSetup(tripController)
-                .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setControllerAdvice(new com.vanvan.exception.GlobalExceptionHandler())
-                .build();
-    }
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getTripById_returns200() throws Exception {
         TripDetailsDTO dto = new TripDetailsDTO(
                 1L, LocalDate.now(), LocalTime.of(10, 0),
@@ -62,15 +70,19 @@ class TripControllerTest {
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void listTrips_returns200() throws Exception {
         when(tripService.getTripHistory(any(), any(), any(), any(), any(), any(), any()))
                 .thenReturn(new PageImpl<>(List.of()));
 
-        mockMvc.perform(get("/api/trips/history"))
+        mockMvc.perform(get("/api/trips/history")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser(roles = "DRIVER")
     void updateStatus_returns200() throws Exception {
         TripDetailsDTO dto = new TripDetailsDTO(
                 1L, LocalDate.now(), LocalTime.of(10, 0),
@@ -84,16 +96,21 @@ class TripControllerTest {
 
         mockMvc.perform(patch("/api/trips/1/status")
                         .contentType(MediaType.APPLICATION_JSON)
-                        .content(objectMapper.writeValueAsString(body)))
+                        .content(objectMapper.writeValueAsString(body))
+                        .with(org.springframework.security.test.web.servlet.request
+                                .SecurityMockMvcRequestPostProcessors.csrf()))
                 .andExpect(status().isOk());
     }
 
     @Test
+    @WithMockUser(roles = "ADMIN")
     void getMonitoring_returns200() throws Exception {
         when(tripService.getMonitoringData(any(), any()))
                 .thenReturn(new PageImpl<>(List.of()));
 
-        mockMvc.perform(get("/api/trips/monitoring"))
+        mockMvc.perform(get("/api/trips/monitoring")
+                        .param("page", "0")
+                        .param("size", "10"))
                 .andExpect(status().isOk());
     }
 }
