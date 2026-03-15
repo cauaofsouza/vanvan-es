@@ -5,6 +5,8 @@ import com.vanvan.dto.UpdateTripStatusDTO;
 import com.vanvan.enums.TripStatus;
 import com.vanvan.service.TripService;
 import com.fasterxml.jackson.databind.ObjectMapper;
+import com.fasterxml.jackson.databind.SerializationFeature;
+import com.fasterxml.jackson.datatype.jsr310.JavaTimeModule;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
 import org.junit.jupiter.api.extension.ExtendWith;
@@ -37,17 +39,13 @@ class TripControllerTest {
     private TripController tripController;
 
     private final ObjectMapper objectMapper = new ObjectMapper()
-            .registerModule(new com.fasterxml.jackson.datatype.jsr310.JavaTimeModule())
-            .disable(com.fasterxml.jackson.databind.SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
+            .registerModule(new JavaTimeModule())
+            .disable(SerializationFeature.WRITE_DATES_AS_TIMESTAMPS);
 
     @BeforeEach
     void setUp() {
         mockMvc = MockMvcBuilders.standaloneSetup(tripController)
                 .setCustomArgumentResolvers(new PageableHandlerMethodArgumentResolver())
-                .setMessageConverters(
-                        new org.springframework.http.converter.json.GsonHttpMessageConverter(),
-                        new org.springframework.http.converter.StringHttpMessageConverter()
-                )
                 .setControllerAdvice(new com.vanvan.exception.GlobalExceptionHandler())
                 .build();
     }
