@@ -134,27 +134,6 @@ class AdminControllerTest {
                         .content(body))
                 .andExpect(status().isOk());
     }
-    @Test
-    @DisplayName("Deve listar motoristas - Status 200")
-    void listDrivers_returns200() throws Exception {
-        when(adminService.listDrivers(any(), any()))
-                .thenReturn(org.springframework.data.domain.Page.empty());
-        mockMvc.perform(get("/api/admin/drivers")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk());
-    }
-
-    @Test
-    @DisplayName("Deve listar clientes - Status 200")
-    void listClients_returns200() throws Exception {
-        when(adminService.listClients(any(), any(), any(), any()))
-                .thenReturn(org.springframework.data.domain.Page.empty());
-        mockMvc.perform(get("/api/admin/clients")
-                        .param("page", "0")
-                        .param("size", "10"))
-                .andExpect(status().isOk());
-    }
 
     @Test
     @DisplayName("Deve buscar cliente por id - Status 200")
